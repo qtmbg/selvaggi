@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Trophy, MapPin, Info, CheckCircle, ChevronDown, Building2 } from 'lucide-react';
 
 // 👇 PASTE YOUR GOOGLE APPS SCRIPT URL HERE 👇
-const GOOGLE_SCRIPT_URL = "YOUR_WEB_APP_URL_HERE"; 
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbEYxfy4os-vYRNscVB680-YqHv9DhDu_M9WafKo0o_vRQRwX8wZwszT6IxM0fIUmVWA/exec"; 
 
-// Added interface for TypeScript compatibility
+// Interface for TypeScript compatibility
 interface FormData {
   fullName: string;
   company: string;
@@ -31,7 +31,8 @@ export default function App() {
   
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
-  // --- TAILWIND FALLBACK FOR STACKBLITZ ---
+  // --- STYLING FIX ---
+  // We inject Tailwind via CDN as a safety net, but we'll use it as the primary engine.
   useEffect(() => {
     if (!document.getElementById('tailwind-cdn')) {
       const script = document.createElement('script');
@@ -42,8 +43,9 @@ export default function App() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
+    const target = e.target as HTMLInputElement;
+    const { name, value, type } = target;
+    const checked = target.checked;
     
     setFormData(prev => ({
       ...prev,
@@ -99,16 +101,16 @@ export default function App() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4 font-sans text-neutral-800">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-xl overflow-hidden text-center p-8 border border-neutral-200">
+      <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden text-center p-8 border border-gray-200">
           <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle size={32} strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl font-bold text-neutral-900 mb-4 uppercase tracking-tight">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4 uppercase tracking-tight">
             Thank you for entering the SELVAGGI BUILT raffle.
           </h2>
-          <div className="space-y-4 text-neutral-600 mb-8">
-            <p className="bg-neutral-50 p-4 rounded-lg text-sm border border-neutral-100">
+          <div className="space-y-4 text-gray-600 mb-8">
+            <p className="bg-gray-50 p-4 rounded border border-gray-100 text-sm">
               The winner of the YETI Hopper M Series Backpack (approx. $275 value) will be contacted after the show.
             </p>
             <p>
@@ -120,7 +122,7 @@ export default function App() {
               setIsSubmitted(false);
               setFormData({ fullName: '', company: '', email: '', role: '', projectTimeline: '', facilityType: '', optIn: false });
             }}
-            className="text-orange-600 font-semibold hover:text-orange-700 underline text-sm transition-colors"
+            className="text-[#ea580c] font-bold hover:underline text-sm"
           >
             Submit another entry
           </button>
@@ -130,62 +132,64 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100 py-8 px-4 sm:px-6 lg:px-8 font-sans text-neutral-800 flex justify-center">
-      <div className="max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden border border-neutral-200">
+    <div className="min-h-screen bg-[#f5f5f5] py-8 px-4 flex justify-center" style={{ fontFamily: 'sans-serif' }}>
+      <div className="max-w-lg w-full bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
         
-        <div className="bg-neutral-900 text-white px-6 py-8 relative overflow-hidden border-b-4 border-orange-600">
-          <div className="absolute top-0 right-0 -mr-8 -mt-8 w-40 h-40 rounded-full bg-neutral-800 opacity-50"></div>
-          <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-32 h-32 rounded-full bg-orange-600/10 opacity-50"></div>
+        {/* Header Section */}
+        <div className="bg-[#171717] text-white px-6 py-10 relative overflow-hidden border-b-4 border-[#ea580c]">
+          <div className="absolute top-0 right-0 -mr-8 -mt-8 w-40 h-40 rounded-full bg-white/5 opacity-50"></div>
           
           <div className="relative z-10 text-center">
             <div className="flex justify-center mb-4">
-              <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm border border-white/5">
-                 <Building2 size={36} className="text-orange-500" />
+              <div className="bg-white/10 p-3 rounded backdrop-blur-sm border border-white/5">
+                 <Building2 size={36} className="text-[#f97316]" />
               </div>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-widest mb-2 uppercase text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-[0.2em] mb-2 uppercase">
               SELVAGGI BUILT
             </h1>
-            <h2 className="text-lg text-neutral-300 font-medium mb-5 tracking-wide uppercase text-sm">
+            <h2 className="text-sm text-gray-400 font-bold mb-6 tracking-widest uppercase">
               Trade Show Raffle
             </h2>
             
-            <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 mb-5 backdrop-blur-sm">
+            <div className="bg-[#f97316]/10 border border-[#f97316]/30 rounded-lg p-4 mb-6">
               <div className="flex items-start justify-center gap-3">
-                <Trophy className="text-orange-500 shrink-0 mt-0.5" size={20} />
-                <p className="text-sm sm:text-base font-semibold text-orange-50">
-                  Enter to win a YETI Hopper M Series Backpack 
-                  <span className="block text-orange-200/80 text-xs font-normal mt-1">(Approx. $275 Value)</span>
+                <Trophy className="text-[#f97316] shrink-0 mt-0.5" size={20} />
+                <p className="text-sm sm:text-base font-bold text-white">
+                  Win a YETI Hopper M Series Backpack 
+                  <span className="block text-gray-400 text-xs font-normal mt-1 uppercase tracking-wider">(Approx. $275 Value)</span>
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-sm text-neutral-300">
-              <div className="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-full">
-                <MapPin size={16} className="text-orange-500" />
-                <span className="font-medium">Exhibitor Booth #857</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-xs font-bold uppercase tracking-widest text-gray-400">
+              <div className="flex items-center gap-2">
+                <MapPin size={14} className="text-[#f97316]" />
+                <span>Booth #857</span>
               </div>
-              <div className="hidden sm:block text-neutral-600">•</div>
-              <div className="flex items-center gap-1.5 text-xs sm:text-sm">
-                <Info size={16} className="text-orange-500" />
-                <span>Winner selected post-conference</span>
+              <div className="hidden sm:block text-gray-700">|</div>
+              <div className="flex items-center gap-2">
+                <Info size={14} className="text-[#f97316]" />
+                <span>Post-Show Selection</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-6 sm:p-8">
+        {/* Form Section */}
+        <div className="p-6 sm:p-10">
           {errors.form && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md text-sm text-red-600 font-medium">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-sm text-red-600 font-bold uppercase tracking-tight">
               {errors.form}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             
+            {/* Field: Name */}
             <div>
-              <label htmlFor="fullName" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
-                Full Name <span className="text-orange-500">*</span>
+              <label htmlFor="fullName" className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.15em]">
+                Full Name <span className="text-[#f97316]">*</span>
               </label>
               <input
                 type="text"
@@ -193,16 +197,17 @@ export default function App() {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-md border ${errors.fullName ? 'border-red-500 focus:ring-red-200' : 'border-neutral-300 focus:border-orange-500 focus:ring-orange-200'} focus:outline-none focus:ring-2 transition-all bg-neutral-50 hover:bg-white`}
+                className={`w-full px-4 py-3 border ${errors.fullName ? 'border-red-500' : 'border-gray-300'} focus:border-[#f97316] outline-none transition-all bg-gray-50 font-medium`}
                 placeholder="John Doe"
                 disabled={isSubmitting}
               />
-              {errors.fullName && <p className="mt-1.5 text-xs font-medium text-red-500">{errors.fullName}</p>}
+              {errors.fullName && <p className="mt-1 text-[10px] font-bold text-red-500 uppercase">{errors.fullName}</p>}
             </div>
 
+            {/* Field: Company */}
             <div>
-              <label htmlFor="company" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
-                Company / Organization <span className="text-orange-500">*</span>
+              <label htmlFor="company" className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.15em]">
+                Company / Organization <span className="text-[#f97316]">*</span>
               </label>
               <input
                 type="text"
@@ -210,16 +215,17 @@ export default function App() {
                 name="company"
                 value={formData.company}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-md border ${errors.company ? 'border-red-500 focus:ring-red-200' : 'border-neutral-300 focus:border-orange-500 focus:ring-orange-200'} focus:outline-none focus:ring-2 transition-all bg-neutral-50 hover:bg-white`}
-                placeholder="Acme Corp"
+                className={`w-full px-4 py-3 border ${errors.company ? 'border-red-500' : 'border-gray-300'} focus:border-[#f97316] outline-none transition-all bg-gray-50 font-medium`}
+                placeholder="Company Name"
                 disabled={isSubmitting}
               />
-              {errors.company && <p className="mt-1.5 text-xs font-medium text-red-500">{errors.company}</p>}
+              {errors.company && <p className="mt-1 text-[10px] font-bold text-red-500 uppercase">{errors.company}</p>}
             </div>
 
+            {/* Field: Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
-                Work Email <span className="text-orange-500">*</span>
+              <label htmlFor="email" className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.15em]">
+                Work Email <span className="text-[#f97316]">*</span>
               </label>
               <input
                 type="email"
@@ -227,22 +233,19 @@ export default function App() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 rounded-md border ${errors.email ? 'border-red-500 focus:ring-red-200' : 'border-neutral-300 focus:border-orange-500 focus:ring-orange-200'} focus:outline-none focus:ring-2 transition-all bg-neutral-50 hover:bg-white`}
-                placeholder="john@example.com"
+                className={`w-full px-4 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} focus:border-[#f97316] outline-none transition-all bg-gray-50 font-medium`}
+                placeholder="email@work.com"
                 disabled={isSubmitting}
               />
-              {errors.email && <p className="mt-1.5 text-xs font-medium text-red-500">{errors.email}</p>}
-              <p className="mt-2 text-xs text-neutral-500 flex items-start gap-1.5 font-medium">
-                <Info size={14} className="shrink-0 mt-0.5 text-neutral-400" />
-                We will only contact the winner and send occasional project insights.
-              </p>
+              {errors.email && <p className="mt-1 text-[10px] font-bold text-red-500 uppercase">{errors.email}</p>}
             </div>
 
-            <hr className="border-neutral-200" />
+            <hr className="border-gray-100" />
 
+            {/* Field: Role */}
             <div>
-              <label htmlFor="role" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
-                What best describes your role?
+              <label htmlFor="role" className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.15em]">
+                Professional Role
               </label>
               <div className="relative">
                 <select
@@ -251,9 +254,9 @@ export default function App() {
                   value={formData.role}
                   onChange={handleChange}
                   disabled={isSubmitting}
-                  className="w-full px-4 py-3 pr-10 rounded-md border border-neutral-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none appearance-none transition-all bg-neutral-50 hover:bg-white font-medium text-neutral-800"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-[#f97316] outline-none appearance-none bg-gray-50 font-medium"
                 >
-                  <option value="" disabled>Select a role...</option>
+                  <option value="" disabled>Select role...</option>
                   <option value="Facilities Director">Facilities Director</option>
                   <option value="Construction / Project Manager">Construction / Project Manager</option>
                   <option value="Healthcare Administrator">Healthcare Administrator</option>
@@ -263,15 +266,16 @@ export default function App() {
                   <option value="Vendor/Consultant">Vendor/Consultant</option>
                   <option value="Other">Other</option>
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-neutral-400">
+                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
                   <ChevronDown size={18} />
                 </div>
               </div>
             </div>
 
+            {/* Field: Timeline */}
             <div>
-              <label className="block text-sm font-bold text-neutral-700 mb-3 uppercase tracking-wide text-xs">
-                Are you currently planning any construction or renovation projects?
+              <label className="block text-[10px] font-black text-gray-500 mb-4 uppercase tracking-[0.15em]">
+                Project Timeline
               </label>
               <div className="space-y-3">
                 {[
@@ -280,29 +284,26 @@ export default function App() {
                   "Exploring ideas / early planning",
                   "Not currently"
                 ].map((option) => (
-                  <label key={option} className="flex items-start cursor-pointer group">
-                    <div className="flex items-center h-5">
-                      <input
-                        type="radio"
-                        name="projectTimeline"
-                        value={option}
-                        checked={formData.projectTimeline === option}
-                        onChange={handleChange}
-                        disabled={isSubmitting}
-                        className="w-5 h-5 text-orange-600 bg-neutral-100 border-neutral-300 focus:ring-orange-500 focus:ring-2"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <span className="text-neutral-700 group-hover:text-neutral-900 font-medium">{option}</span>
-                    </div>
+                  <label key={option} className="flex items-center cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="projectTimeline"
+                      value={option}
+                      checked={formData.projectTimeline === option}
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                      className="w-4 h-4 text-[#f97316] accent-[#f97316]"
+                    />
+                    <span className="ml-3 text-sm font-medium text-gray-700 group-hover:text-black">{option}</span>
                   </label>
                 ))}
               </div>
             </div>
 
+            {/* Field: Facility */}
             <div>
-              <label htmlFor="facilityType" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
-                Which type of facility do you represent?
+              <label htmlFor="facilityType" className="block text-[10px] font-black text-gray-500 mb-2 uppercase tracking-[0.15em]">
+                Facility Type
               </label>
               <div className="relative">
                 <select
@@ -311,9 +312,9 @@ export default function App() {
                   value={formData.facilityType}
                   onChange={handleChange}
                   disabled={isSubmitting}
-                  className="w-full px-4 py-3 pr-10 rounded-md border border-neutral-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none appearance-none transition-all bg-neutral-50 hover:bg-white font-medium text-neutral-800"
+                  className="w-full px-4 py-3 border border-gray-300 focus:border-[#f97316] outline-none appearance-none bg-gray-50 font-medium"
                 >
-                  <option value="" disabled>Select a facility type...</option>
+                  <option value="" disabled>Select facility...</option>
                   <option value="Hospital / Medical Center">Hospital / Medical Center</option>
                   <option value="Outpatient / Clinic">Outpatient / Clinic</option>
                   <option value="Healthcare System Administration">Healthcare System Administration</option>
@@ -321,44 +322,40 @@ export default function App() {
                   <option value="Architecture / Design Firm">Architecture / Design Firm</option>
                   <option value="Other">Other</option>
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-neutral-400">
+                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-400">
                   <ChevronDown size={18} />
                 </div>
               </div>
             </div>
 
-            <hr className="border-neutral-200" />
+            <hr className="border-gray-100" />
 
-            <div>
-              <label className="flex items-start cursor-pointer group bg-neutral-50 p-4 rounded-md border border-neutral-200 hover:bg-neutral-100 transition-colors">
-                <div className="flex items-center h-5 mt-0.5">
-                  <input
-                    type="checkbox"
-                    name="optIn"
-                    checked={formData.optIn}
-                    onChange={handleChange}
-                    disabled={isSubmitting}
-                    className="w-5 h-5 text-orange-600 bg-white border-neutral-300 rounded focus:ring-orange-500 focus:ring-2"
-                  />
-                </div>
-                <div className="ml-3 text-sm">
-                  <span className="text-neutral-700 group-hover:text-neutral-900 font-semibold">
-                    Yes, I'd like to receive occasional project updates from SELVAGGI BUILT.
-                  </span>
-                </div>
-              </label>
-            </div>
+            {/* Field: Opt-in */}
+            <label className="flex items-start cursor-pointer group p-4 bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors">
+              <input
+                type="checkbox"
+                name="optIn"
+                checked={formData.optIn}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                className="w-5 h-5 mt-0.5 accent-[#f97316]"
+              />
+              <span className="ml-3 text-xs font-bold text-gray-700 uppercase tracking-wide leading-relaxed">
+                Yes, I'd like to receive occasional project updates from SELVAGGI BUILT.
+              </span>
+            </label>
 
+            {/* Submit Button */}
             <div className="pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 disabled:cursor-not-allowed text-white font-black uppercase tracking-wider py-4 px-8 rounded-md shadow-lg shadow-orange-600/20 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+                className="w-full bg-[#ea580c] hover:bg-[#c2410c] disabled:bg-gray-400 text-white font-black uppercase tracking-[0.2em] py-5 px-8 shadow-lg transition-all active:scale-[0.98]"
               >
-                {isSubmitting ? 'Submitting...' : 'Enter Raffle'}
+                {isSubmitting ? 'Processing...' : 'Enter Raffle'}
               </button>
-              <p className="text-center text-xs font-semibold uppercase tracking-widest text-neutral-400 mt-6">
-                Powered by Selvaggi Built
+              <p className="text-center text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 mt-8">
+                Selvaggi Built Quality
               </p>
             </div>
 
