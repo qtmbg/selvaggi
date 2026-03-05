@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Trophy, MapPin, Info, CheckCircle, ChevronDown, Building2 } from 'lucide-react';
 
 // 👇 PASTE YOUR GOOGLE APPS SCRIPT URL HERE 👇
@@ -29,7 +29,7 @@ export default function App() {
     optIn: false
   });
   
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
 
   // --- TAILWIND FALLBACK FOR STACKBLITZ ---
   useEffect(() => {
@@ -41,19 +41,22 @@ export default function App() {
     }
   }, []);
 
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    
     if (errors[name]) {
-      setErrors((prev: any) => ({ ...prev, [name]: undefined }));
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: Record<string, string> = {};
     if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required';
     if (!formData.company.trim()) newErrors.company = 'Company / Organization is required';
     if (!formData.email.trim()) {
@@ -66,15 +69,14 @@ export default function App() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     
     setIsSubmitting(true);
     
     try {
-      const data = new FormData();
-      // TypeScript fix for iterating keys
+      const data = new window.FormData();
       (Object.keys(formData) as Array<keyof FormData>).forEach(key => {
         data.append(key, String(formData[key]));
       });
