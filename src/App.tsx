@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Trophy, MapPin, Info, CheckCircle, ChevronDown, Building2, Calendar, User, Building, Mail } from 'lucide-react';
 
 // 👇 PASTE YOUR GOOGLE APPS SCRIPT URL HERE 👇
-const GOOGLE_SCRIPT_URL = "YOUR_WEB_APP_URL_HERE"; 
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbEYxfy4os-vYRNscVB680-YqHv9DhDu_M9WafKo0o_vRQRwX8wZwszT6IxM0fIUmVWA/exec"; 
 
 interface FormData {
   fullName: string;
