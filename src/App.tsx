@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Trophy, MapPin, Info, CheckCircle, ChevronDown, Building2, Calendar, User, Building, Mail } from 'lucide-react';
+import { Trophy, MapPin, Info, CheckCircle, ChevronDown, Calendar, User, Building, Mail, CheckSquare, Square, Building2 } from 'lucide-react';
 
 // 👇 PASTE YOUR GOOGLE APPS SCRIPT URL HERE 👇
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7Dat8yK1NVk98bbOBs-d8etcoMEdw5OBWM0206cisMj_hz764025E6j9T4Hni9HGX7w/exec"; 
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7Dat8yK1NVk98bbOBs-d8etcoMEdw5OBWM0206cisMj_hz764025E6j9T4Hni9HGX7w/exec""; 
 
 interface FormData {
   fullName: string;
@@ -29,7 +29,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    // Hard reset for Global Styles - Optimized for mobile visibility
+    // Hard reset for Global Styles - Dark Premium Theme
     const styleTag = document.createElement('style');
     styleTag.innerHTML = `
       html, body { 
@@ -40,7 +40,7 @@ export default function App() {
         color: #333;
       }
       * { box-sizing: border-box; }
-      input, select, button { 
+      input[type="text"], input[type="email"], select, button { 
         font-family: inherit; 
         outline: none;
         appearance: none;
@@ -48,8 +48,8 @@ export default function App() {
       }
       @media (max-width: 600px) {
         .app-container { padding: 0 !important; }
-        .form-card { border-radius: 0 !important; border: none !important; }
-        .header-section { padding: 40px 20px !important; }
+        .form-card { border-radius: 0 !important; border: none !important; box-shadow: none !important; }
+        .header-section { padding: 50px 20px 40px 20px !important; }
         .body-section { padding: 30px 20px !important; }
       }
     `;
@@ -58,15 +58,19 @@ export default function App() {
 
   const handleChange = (e: any) => {
     const target = e.target;
-    const { name, value, type, checked } = target;
+    const { name, value } = target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
   const selectTimeline = (value: string) => {
     setFormData(prev => ({ ...prev, projectTimeline: value }));
+  };
+
+  const toggleOptIn = () => {
+    setFormData(prev => ({ ...prev, optIn: !prev.optIn }));
   };
 
   const handleSubmit = async (e: any) => {
@@ -87,86 +91,114 @@ export default function App() {
     }
   };
 
-  const BRAND_ORANGE = "#ea580c";
+  // Harmonized branding colors
+  const BRAND_ORANGE = "#E35205"; 
   const BRAND_DARK = "#111111";
 
+  // --- SUCCESS SCREEN ---
   if (isSubmitted) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', backgroundColor: '#000' }}>
-        <div style={{ maxWidth: '450px', width: '100%', backgroundColor: 'white', padding: '40px', textAlign: 'center', borderTop: `12px solid ${BRAND_ORANGE}` }}>
-          <CheckCircle size={64} color="#16a34a" style={{ marginBottom: '24px' }} />
-          <h2 style={{ fontSize: '28px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-0.5px', marginBottom: '16px' }}>Entry Confirmed</h2>
-          <p style={{ color: '#555', lineHeight: '1.6', fontSize: '16px', marginBottom: '32px' }}>The winner of the YETI Hopper M Series Backpack will be contacted after the show.</p>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', backgroundColor: '#000000' }}>
+        <div style={{ maxWidth: '450px', width: '100%', backgroundColor: 'white', padding: '50px 40px', textAlign: 'center', borderTop: `12px solid ${BRAND_ORANGE}`, boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+          <CheckCircle size={64} color="#16a34a" style={{ marginBottom: '24px', margin: '0 auto 24px auto' }} />
+          <h2 style={{ fontSize: '32px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '-0.5px', marginBottom: '16px', color: '#111' }}>Good Luck!</h2>
+          <p style={{ color: '#555', lineHeight: '1.6', fontSize: '16px', marginBottom: '32px', fontWeight: '500' }}>
+            Your entry has been confirmed. The winner of the YETI Hopper M Series Backpack ($300+ Value) will be contacted after the show.
+          </p>
           <div style={{ padding: '20px', backgroundColor: '#000', color: 'white', fontWeight: '900', fontSize: '14px', letterSpacing: '4px', marginBottom: '32px' }}>BOOTH #857</div>
-          <button onClick={() => setIsSubmitted(false)} style={{ background: 'none', border: 'none', color: BRAND_ORANGE, fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', borderBottom: `2px solid ${BRAND_ORANGE}`, cursor: 'pointer', fontSize: '14px' }}>
-            Submit Another Entry
-          </button>
+          <a 
+            href="https://selvaggibuilt.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ 
+              display: 'block', 
+              backgroundColor: BRAND_ORANGE, 
+              color: 'white', 
+              padding: '24px', 
+              textDecoration: 'none', 
+              fontWeight: '900', 
+              textTransform: 'uppercase', 
+              letterSpacing: '3px', 
+              fontSize: '15px', 
+              transition: 'transform 0.2s',
+              boxShadow: `0 10px 20px -5px ${BRAND_ORANGE}80`
+            }}
+          >
+            Visit Our Website
+          </a>
         </div>
       </div>
     );
   }
 
+  // --- MAIN FORM SCREEN ---
   return (
-    <div className="app-container" style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', padding: '40px 20px', backgroundColor: '#000' }}>
-      <div className="form-card" style={{ maxWidth: '500px', width: '100%', backgroundColor: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}>
+    <div className="app-container" style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', padding: '40px 20px', backgroundColor: '#000000' }}>
+      <div className="form-card" style={{ maxWidth: '500px', width: '100%', backgroundColor: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)' }}>
         
-        {/* Header Section */}
-        <div className="header-section" style={{ backgroundColor: BRAND_DARK, color: 'white', padding: '70px 40px', textAlign: 'center', borderBottom: `10px solid ${BRAND_ORANGE}`, position: 'relative' }}>
-          <div style={{ marginBottom: '30px' }}>
-            <Building2 size={50} color={BRAND_ORANGE} />
-          </div>
-          <h1 style={{ fontSize: '42px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.2em', lineHeight: '0.9', margin: '0 0 15px 0' }}>SELVAGGI<br/>BUILT</h1>
-          <div style={{ width: '60px', height: '4px', backgroundColor: BRAND_ORANGE, margin: '20px auto' }}></div>
-          <p style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '5px', textTransform: 'uppercase', color: '#666', margin: '0 0 35px 0' }}>Trade Show Raffle</p>
+        {/* Header Section (Reverted to Stark Black) */}
+        <div className="header-section" style={{ backgroundColor: BRAND_DARK, color: 'white', padding: '70px 40px 50px 40px', textAlign: 'center', borderBottom: `10px solid ${BRAND_ORANGE}` }}>
           
-          <div style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', border: '1px solid rgba(234, 88, 12, 0.3)', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '35px' }}>
-            <Trophy color={BRAND_ORANGE} size={30} />
+          {/* Pure Code Typography Logo */}
+          <div style={{ marginBottom: '35px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Building2 size={48} color={BRAND_ORANGE} style={{ marginBottom: '16px' }} />
+            <h1 style={{ fontSize: '46px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.2em', lineHeight: '0.95', margin: '0', color: 'white' }}>
+              SELVAGGI<br/>BUILT
+            </h1>
+          </div>
+          
+          <div style={{ width: '60px', height: '4px', backgroundColor: BRAND_ORANGE, margin: '20px auto' }}></div>
+          <p style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '5px', textTransform: 'uppercase', color: '#888', margin: '0 0 40px 0' }}>Trade Show Raffle</p>
+          
+          {/* High Contrast Prize Callout Box */}
+          <div style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', border: `1px solid ${BRAND_ORANGE}40`, padding: '25px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', marginBottom: '35px' }}>
+            <Trophy color={BRAND_ORANGE} size={32} />
             <div style={{ textAlign: 'left' }}>
               <p style={{ margin: 0, fontSize: '15px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Win a YETI Hopper</p>
-              <p style={{ margin: '4px 0 0 0', fontSize: '11px', fontWeight: 'bold', color: '#777', textTransform: 'uppercase' }}>Approx. $275 Value</p>
+              <p style={{ margin: '4px 0 0 0', fontSize: '12px', fontWeight: 'bold', color: '#999', textTransform: 'uppercase', letterSpacing: '1px' }}>$300+ Value</p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#555' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#777' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={16} color={BRAND_ORANGE} /> Booth 857</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Info size={16} color={BRAND_ORANGE} /> Post-Show</span>
           </div>
         </div>
 
         {/* Form Body */}
-        <div className="body-section" style={{ padding: '50px 40px' }}>
+        <div className="body-section" style={{ padding: '50px 40px', backgroundColor: '#ffffff' }}>
           <form onSubmit={handleSubmit}>
             
             <div style={{ marginBottom: '35px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#999', marginBottom: '12px' }}>
-                <User size={14} /> Full Name *
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#555', marginBottom: '12px' }}>
+                <User size={14} color={BRAND_ORANGE} /> Full Name *
               </label>
-              <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} placeholder="REQUIRED"
-                style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#000' }} />
+              <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} placeholder="Required"
+                style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#111' }} />
             </div>
 
             <div style={{ marginBottom: '35px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#999', marginBottom: '12px' }}>
-                <Building size={14} /> Company *
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#555', marginBottom: '12px' }}>
+                <Building size={14} color={BRAND_ORANGE} /> Company *
               </label>
-              <input type="text" name="company" required value={formData.company} onChange={handleChange} placeholder="REQUIRED"
-                style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#000' }} />
+              <input type="text" name="company" required value={formData.company} onChange={handleChange} placeholder="Required"
+                style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#111' }} />
             </div>
 
             <div style={{ marginBottom: '35px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#999', marginBottom: '12px' }}>
-                <Mail size={14} /> Work Email *
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#555', marginBottom: '12px' }}>
+                <Mail size={14} color={BRAND_ORANGE} /> Work Email *
               </label>
-              <input type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="REQUIRED"
-                style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#000' }} />
+              <input type="email" name="email" required value={formData.email} onChange={handleChange} placeholder="Required"
+                style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#111' }} />
             </div>
 
             <div style={{ marginBottom: '45px' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#999', marginBottom: '12px' }}>Professional Role</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#555', marginBottom: '12px' }}>Professional Role</label>
               <div style={{ position: 'relative' }}>
                 <select name="role" value={formData.role} onChange={handleChange}
-                  style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#000', borderRadius: 0 }}>
-                  <option value="" disabled>SELECT ROLE...</option>
+                  style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#111', borderRadius: 0 }}>
+                  <option value="" disabled>Select Role...</option>
                   <option value="Facilities Director">Facilities Director</option>
                   <option value="Construction Manager">Construction Manager</option>
                   <option value="Healthcare Admin">Healthcare Admin</option>
@@ -178,7 +210,7 @@ export default function App() {
             </div>
 
             {/* UPGRADED PROJECT TIMELINE - BOLD TILES */}
-            <div style={{ padding: '40px 25px', backgroundColor: '#000', marginBottom: '45px', border: '1px solid #222' }}>
+            <div style={{ padding: '40px 25px', backgroundColor: BRAND_DARK, marginBottom: '45px', border: '1px solid #222' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '25px' }}>
                 <Calendar size={20} color={BRAND_ORANGE} />
                 <span style={{ fontSize: '14px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', color: 'white' }}>Current Project Planning?</span>
@@ -215,11 +247,11 @@ export default function App() {
             </div>
 
             <div style={{ marginBottom: '45px' }}>
-              <label style={{ display: 'block', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#999', marginBottom: '12px' }}>Facility Type</label>
+              <label style={{ display: 'block', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#555', marginBottom: '12px' }}>Facility Type</label>
               <div style={{ position: 'relative' }}>
                 <select name="facilityType" value={formData.facilityType} onChange={handleChange}
-                  style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#000', borderRadius: 0 }}>
-                  <option value="" disabled>SELECT FACILITY...</option>
+                  style={{ width: '100%', padding: '18px', border: '2px solid #eee', backgroundColor: '#fcfcfc', fontSize: '16px', fontWeight: '600', color: '#111', borderRadius: 0 }}>
+                  <option value="" disabled>Select Facility...</option>
                   <option value="Hospital">Hospital</option>
                   <option value="Outpatient">Outpatient / Clinic</option>
                   <option value="Medical Office">Medical Office Building</option>
@@ -230,12 +262,17 @@ export default function App() {
               </div>
             </div>
 
-            {/* Checkbox Section */}
-            <div onClick={() => handleChange({ target: { name: 'optIn', type: 'checkbox', checked: !formData.optIn } } as any)}
+            {/* CUSTOM BULLETPROOF CHECKBOX SECTION */}
+            <div onClick={toggleOptIn}
               style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', padding: '25px', backgroundColor: '#fcfcfc', border: '2px solid #eee', cursor: 'pointer', marginBottom: '50px' }}>
-              <input type="checkbox" name="optIn" checked={formData.optIn} readOnly
-                style={{ width: '26px', height: '26px', flexShrink: 0, accentColor: BRAND_ORANGE }} />
-              <span style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', lineHeight: '1.4', letterSpacing: '0.5px', color: '#333' }}>
+              <div style={{ flexShrink: 0, marginTop: '2px' }}>
+                {formData.optIn ? (
+                  <CheckSquare size={28} color={BRAND_ORANGE} strokeWidth={2.5} />
+                ) : (
+                  <Square size={28} color="#ccc" strokeWidth={2} />
+                )}
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: '800', textTransform: 'uppercase', lineHeight: '1.6', letterSpacing: '0.5px', color: '#333' }}>
                 Yes, I'd like to receive occasional project updates from Selvaggi Built.
               </span>
             </div>
@@ -254,7 +291,7 @@ export default function App() {
                   letterSpacing: '6px', 
                   fontSize: '18px',
                   cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 15px 30px -10px rgba(234, 88, 12, 0.5)'
+                  boxShadow: `0 15px 30px -10px ${BRAND_ORANGE}80`
                 }}>
                 {isSubmitting ? 'PROCESSING...' : 'ENTER RAFFLE'}
               </button>
