@@ -2,13 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Trophy, MapPin, Info, CheckCircle, ChevronDown, Building2 } from 'lucide-react';
 
 // 👇 PASTE YOUR GOOGLE APPS SCRIPT URL HERE 👇
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbEYxfy4os-vYRNscVB680-YqHv9DhDu_M9WafKo0o_vRQRwX8wZwszT6IxM0fIUmVWA/exec"; 
+const GOOGLE_SCRIPT_URL = "YOUR_WEB_APP_URL_HERE"; 
+
+// Added interface for TypeScript compatibility
+interface FormData {
+  fullName: string;
+  company: string;
+  email: string;
+  role: string;
+  projectTimeline: string;
+  facilityType: string;
+  optIn: boolean;
+}
 
 export default function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fullName: '',
     company: '',
     email: '',
@@ -17,10 +28,10 @@ export default function App() {
     facilityType: '',
     optIn: false
   });
-  const [errors, setErrors] = useState({});
+  
+  const [errors, setErrors] = useState<any>({});
 
   // --- TAILWIND FALLBACK FOR STACKBLITZ ---
-  // This ensures your app looks beautiful even if PostCSS isn't configured correctly.
   useEffect(() => {
     if (!document.getElementById('tailwind-cdn')) {
       const script = document.createElement('script');
@@ -30,19 +41,19 @@ export default function App() {
     }
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
+      setErrors((prev: any) => ({ ...prev, [name]: undefined }));
     }
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors: any = {};
     if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required';
     if (!formData.company.trim()) newErrors.company = 'Company / Organization is required';
     if (!formData.email.trim()) {
@@ -55,22 +66,23 @@ export default function App() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
     
     setIsSubmitting(true);
     
     try {
-      // Package data for Google Sheets
       const data = new FormData();
-      Object.keys(formData).forEach(key => data.append(key, formData[key]));
+      // TypeScript fix for iterating keys
+      (Object.keys(formData) as Array<keyof FormData>).forEach(key => {
+        data.append(key, String(formData[key]));
+      });
 
-      // Send to Google Sheets
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         body: data,
-        mode: 'no-cors' // Crucial: prevents browser CORS errors when talking to Google
+        mode: 'no-cors'
       });
 
       setIsSubmitted(true);
@@ -83,7 +95,6 @@ export default function App() {
     }
   };
 
-  // --- SUCCESS VIEW ---
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4 font-sans text-neutral-800">
@@ -116,12 +127,10 @@ export default function App() {
     );
   }
 
-  // --- MAIN FORM VIEW ---
   return (
     <div className="min-h-screen bg-neutral-100 py-8 px-4 sm:px-6 lg:px-8 font-sans text-neutral-800 flex justify-center">
       <div className="max-w-lg w-full bg-white rounded-xl shadow-2xl overflow-hidden border border-neutral-200">
         
-        {/* Header Section */}
         <div className="bg-neutral-900 text-white px-6 py-8 relative overflow-hidden border-b-4 border-orange-600">
           <div className="absolute top-0 right-0 -mr-8 -mt-8 w-40 h-40 rounded-full bg-neutral-800 opacity-50"></div>
           <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-32 h-32 rounded-full bg-orange-600/10 opacity-50"></div>
@@ -163,7 +172,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Form Section */}
         <div className="p-6 sm:p-8">
           {errors.form && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md text-sm text-red-600 font-medium">
@@ -173,7 +181,6 @@ export default function App() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Q1: Full Name */}
             <div>
               <label htmlFor="fullName" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
                 Full Name <span className="text-orange-500">*</span>
@@ -191,7 +198,6 @@ export default function App() {
               {errors.fullName && <p className="mt-1.5 text-xs font-medium text-red-500">{errors.fullName}</p>}
             </div>
 
-            {/* Q2: Company */}
             <div>
               <label htmlFor="company" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
                 Company / Organization <span className="text-orange-500">*</span>
@@ -209,7 +215,6 @@ export default function App() {
               {errors.company && <p className="mt-1.5 text-xs font-medium text-red-500">{errors.company}</p>}
             </div>
 
-            {/* Q3: Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
                 Work Email <span className="text-orange-500">*</span>
@@ -233,7 +238,6 @@ export default function App() {
 
             <hr className="border-neutral-200" />
 
-            {/* Q4: Role */}
             <div>
               <label htmlFor="role" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
                 What best describes your role?
@@ -263,7 +267,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Q5: Timeline */}
             <div>
               <label className="block text-sm font-bold text-neutral-700 mb-3 uppercase tracking-wide text-xs">
                 Are you currently planning any construction or renovation projects?
@@ -295,7 +298,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Q6: Facility Type */}
             <div>
               <label htmlFor="facilityType" className="block text-sm font-bold text-neutral-700 mb-1.5 uppercase tracking-wide text-xs">
                 Which type of facility do you represent?
@@ -325,7 +327,6 @@ export default function App() {
 
             <hr className="border-neutral-200" />
 
-            {/* Q7: Opt-in */}
             <div>
               <label className="flex items-start cursor-pointer group bg-neutral-50 p-4 rounded-md border border-neutral-200 hover:bg-neutral-100 transition-colors">
                 <div className="flex items-center h-5 mt-0.5">
@@ -346,7 +347,6 @@ export default function App() {
               </label>
             </div>
 
-            {/* Submit Button */}
             <div className="pt-4">
               <button
                 type="submit"
